@@ -6,16 +6,16 @@ import (
 	"net/smtp"
 
 	"github.com/adzi007/ecommerce-notification-service/internal/domain"
-	"github.com/adzi007/ecommerce-notification-service/internal/repository"
 	"github.com/gofiber/contrib/websocket"
 )
 
 type NotificationUsecase struct {
-	repo    *repository.NotificationRepositoryStruct
+	// repo    *repository.NotificationRepositoryStruct
+	repo    domain.NotificationRepository
 	Clients map[string]*websocket.Conn
 }
 
-func NewNotificationUsecase(repo *domain.NotificationRepository) *NotificationUsecase {
+func NewNotificationUsecase(repo domain.NotificationRepository) *NotificationUsecase {
 	return &NotificationUsecase{
 		repo:    repo,
 		Clients: make(map[string]*websocket.Conn),
