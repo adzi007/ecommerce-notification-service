@@ -11,6 +11,7 @@ import (
 	"github.com/adzi007/ecommerce-notification-service/internal/usecase"
 	"github.com/gofiber/contrib/fiberzerolog"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/websocket/v2"
 )
 
 func main() {
@@ -32,6 +33,10 @@ func main() {
 
 	hub := ws.NewNotificationHub()
 	go hub.Run()
+
+	app.Use("/ws", ws.AllowUpgrade)
+
+	app.Use("/ws/notification/:userId", websocket.New(hub.HandleWsChatRoom()))
 
 	// wsCon := ws.NewWebSocketHandler(uc)
 

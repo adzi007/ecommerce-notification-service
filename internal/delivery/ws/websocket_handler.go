@@ -2,13 +2,13 @@ package ws
 
 import (
 	"github.com/adzi007/ecommerce-notification-service/internal/domain"
-	"github.com/adzi007/ecommerce-notification-service/internal/usecase"
+	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 )
 
-type WebSocketHandler struct {
-	uc *usecase.NotificationUsecase
-}
+// type WebSocketHandler struct {
+// 	uc *usecase.NotificationUsecase
+// }
 
 type hub struct {
 	Clients               map[*websocket.Conn]bool
@@ -51,6 +51,30 @@ func (h *hub) Run() {
 		}
 	}
 
+}
+
+func AllowUpgrade(ctx *fiber.Ctx) error {
+	if websocket.IsWebSocketUpgrade(ctx) {
+
+		token := ctx.Get("token")
+
+		if token != "" {
+
+			// _, err := utils.DecodeToken(token)
+
+			// if err != nil {
+			// 	return fiber.ErrUnauthorized
+			// }
+
+			return ctx.Next()
+
+		} else {
+
+			return fiber.ErrUnauthorized
+		}
+
+	}
+	return fiber.ErrUpgradeRequired
 }
 
 // func (h *WebSocketHandler) HandleConnection() func(*websocket.Conn) {
