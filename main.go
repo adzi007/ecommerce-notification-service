@@ -37,10 +37,6 @@ func main() {
 
 	app.Use("/ws/notification/:userId", websocket.New(hub.HandleNotificationRoom()))
 
-	// wsCon := ws.NewWebSocketHandler(uc)
-
-	// app.Use("/ws", websocket.New(wsCon.HandleConnection()))
-
 	log.Fatal(app.Listen(":8080"))
 
 }
