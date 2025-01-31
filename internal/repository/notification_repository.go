@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/adzi007/ecommerce-notification-service/internal/domain"
 	"github.com/adzi007/ecommerce-notification-service/internal/dto"
+	"github.com/k0kubun/pp/v3"
 	"gorm.io/gorm"
 )
 
@@ -37,7 +38,21 @@ func (repo *NotificationRepositoryStruct) FindByUser(userId string) ([]domain.No
 }
 
 func (repo *NotificationRepositoryStruct) Insert(notification dto.NotificationData) error {
-	return repo.db.Create(&notification).Error
+
+	insertNotif := &domain.Notification{
+		UserID: notification.UserID,
+		Title:  notification.Title,
+		Body:   notification.Body,
+		Link:   notification.Link,
+		Status: notification.Status,
+		IsRead: notification.IsRead,
+	}
+
+	result := repo.db.Create(&insertNotif)
+
+	pp.Println("result >>> ", insertNotif)
+
+	return result.Error
 }
 
 func (repo *NotificationRepositoryStruct) Update(data domain.Notification) error {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/adzi007/ecommerce-notification-service/internal/usecase"
+	"github.com/adzi007/ecommerce-notification-service/internal/domain"
 	"github.com/rabbitmq/amqp091-go"
 )
 
@@ -18,7 +18,7 @@ type OrderStatusUpdated struct {
 }
 
 // RabbitMQ Consumer
-func ConsumeOrderUpdates(uc *usecase.NotificationUsecase) {
+func ConsumeOrderUpdates(uc *domain.NotificationUsecase) {
 	// conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
 	conn, err := amqp091.Dial("amqp://guest:guest@rabbitmq:5672/")
 	if err != nil {
@@ -46,8 +46,8 @@ func ConsumeOrderUpdates(uc *usecase.NotificationUsecase) {
 		var event OrderStatusUpdated
 		json.Unmarshal(msg.Body, &event)
 
-		go uc.SendWebSocketNotification(event.UserID, event.Message)
-		go uc.SendEmailNotification(event.Email, event.Message)
+		// go uc.SendWebSocketNotification(event.UserID, event.Message)
+		// go uc.SendEmailNotification(event.Email, event.Message)
 		fmt.Println("✅ Notification sent for Order:", event.OrderID)
 	}
 }

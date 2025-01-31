@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/adzi007/ecommerce-notification-service/internal/dto"
+	"github.com/gofiber/contrib/websocket"
 )
 
 type Notification struct {
@@ -11,8 +12,20 @@ type Notification struct {
 	UserID    string `gorm:"not null"`
 	Title     string `gorm:"not null"`
 	Body      string `gorm:"not null"`
+	Link      string `gorm:"not null"`
 	Status    int8   `gorm:"not null"`
 	IsRead    int8   `gorm:"not null"`
+	CreatedAt string
+}
+
+type NotifMessageRequest struct {
+	// ID        int64  `json:"id"`
+	UserID    string `json:"userId"`
+	Title     string `json:"title"`
+	Body      string `json:"body"`
+	Link      string `json:"link"`
+	Status    int8   `json:"status"`
+	IsRead    int8   `json:"isRead"`
 	CreatedAt string
 }
 
@@ -22,14 +35,17 @@ type NotificationRepository interface {
 	Update(notification Notification) error
 }
 
+type NotificationUsecase interface {
+	// FindByUser(userId string) ([]Notification, error)
+	Insert(notification dto.NotificationData) error
+	// Update(notification Notification) error
+}
+
 type NotificationService interface {
 	FindByUser(ctx context.Context, user string) ([]dto.NotificationData, error)
 }
 
 type NotifWebsocket interface {
 	Run()
-	// Join(*websocket.Conn, string)
-	// Leave(*websocket.Conn)
-	// Broadcast(ChatBubble, string)
-	// HandleWsChatRoom() func(*websocket.Conn)
+	HandleNotificationRoom() func(*websocket.Conn)
 }
