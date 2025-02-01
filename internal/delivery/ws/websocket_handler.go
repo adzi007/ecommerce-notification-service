@@ -7,15 +7,20 @@ import (
 	"github.com/adzi007/ecommerce-notification-service/internal/dto"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
-	"github.com/k0kubun/pp/v3"
 )
 
+type notificationChanel struct {
+	Client *websocket.Conn
+	UserID string
+}
+
 type hub struct {
-	Clients               map[*websocket.Conn]bool
-	ClientRegisterChanel  chan *websocket.Conn
-	ClientRemovalChanel   chan *websocket.Conn
-	BroadcastNotification chan domain.Notification
-	NotificationUc        domain.NotificationUsecase
+	Clients                 map[*websocket.Conn]bool
+	ClientRegisterChanel    chan *websocket.Conn
+	ClientRemovalChanel     chan *websocket.Conn
+	BroadcastNotification   chan domain.Notification
+	NotificationUc          domain.NotificationUsecase
+	NotifiChanelConnections []notificationChanel
 }
 
 func NewNotificationHub(notifUc domain.NotificationUsecase) domain.NotifWebsocket {
@@ -37,11 +42,29 @@ func (h *hub) Run() {
 		case conn := <-h.ClientRemovalChanel:
 			delete(h.Clients, conn)
 		case notif := <-h.BroadcastNotification:
-			for conn := range h.Clients {
-				_ = conn.WriteJSON(notif)
+
+			for i := range h.NotifiChanelConnections {
+
+				if h.NotifiChanelConnections[i].UserID == notif.UserID {
+					_ = h.NotifiChanelConnections[i].Client.WriteJSON(notif)
+				}
+
 			}
+			// for conn := range h.Clients {
+			// 	_ = conn.WriteJSON(notif)
+			// }
 		}
 	}
+}
+
+func (h *hub) Join(client *websocket.Conn, userId string) {
+
+	h.ClientRegisterChanel <- client
+
+	h.NotifiChanelConnections = append(h.NotifiChanelConnections, notificationChanel{
+		Client: client,
+		UserID: userId,
+	})
 }
 
 func AllowUpgrade(ctx *fiber.Ctx) error {
@@ -73,12 +96,16 @@ func (h *hub) HandleNotificationRoom() func(*websocket.Conn) {
 
 		userId := conn.Params("userId")
 
-		pp.Println("userId param >>> ", userId)
+		// pp.Println("userId param >>> ", userId)
 
 		defer func() {
 			h.ClientRemovalChanel <- conn
 			_ = conn.Close()
 		}()
+
+		// h.ClientRegisterChanel <- conn
+
+		h.Join(conn, userId)
 
 		for {
 

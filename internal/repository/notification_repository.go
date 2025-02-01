@@ -4,7 +4,6 @@ import (
 	"github.com/adzi007/ecommerce-notification-service/internal/domain"
 	"github.com/adzi007/ecommerce-notification-service/internal/dto"
 	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/database"
-	"github.com/k0kubun/pp/v3"
 )
 
 // Notification Model
@@ -50,7 +49,7 @@ func (repo *NotificationRepositoryStruct) Insert(notification *dto.NotificationD
 
 	result := repo.db.GetDb().Create(&insertNotif)
 
-	pp.Println("result >>> ", insertNotif)
+	// pp.Println("result >>> ", insertNotif)
 
 	return insertNotif, result.Error
 }

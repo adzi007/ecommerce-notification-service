@@ -22,6 +22,7 @@ func NewCartHttpHandle(notifUc domain.NotificationUsecase, notifWs domain.NotifW
 func (h *notifHttpHandler) InsertNewNotifivation(ctx *fiber.Ctx) error {
 
 	reqBody := new(dto.NotificationData)
+
 	if err := ctx.BodyParser(reqBody); err != nil {
 		logger.Error().Err(err).Msg("Error binding request body")
 		return ctx.Status(400).JSON(fiber.Map{
@@ -30,9 +31,9 @@ func (h *notifHttpHandler) InsertNewNotifivation(ctx *fiber.Ctx) error {
 		})
 	}
 
-	data, err := h.notifUc.Insert(reqBody)
+	// pp.Println("reqBody >>>> ", reqBody)
 
-	h.notifWs.Broadcast(data)
+	data, err := h.notifUc.Insert(reqBody)
 
 	if err != nil {
 
@@ -42,6 +43,10 @@ func (h *notifHttpHandler) InsertNewNotifivation(ctx *fiber.Ctx) error {
 		})
 
 	}
+
+	h.notifWs.Broadcast(data)
+
+	// pp.Println("data >>> ", data)
 
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"pesan": "success create a new cart 1",
