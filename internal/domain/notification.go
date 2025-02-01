@@ -31,13 +31,13 @@ type NotifMessageRequest struct {
 
 type NotificationRepository interface {
 	FindByUser(userId string) ([]Notification, error)
-	Insert(notification dto.NotificationData) error
+	Insert(notification *dto.NotificationData) (Notification, error)
 	Update(notification Notification) error
 }
 
 type NotificationUsecase interface {
 	// FindByUser(userId string) ([]Notification, error)
-	Insert(notification dto.NotificationData) error
+	Insert(notification *dto.NotificationData) (Notification, error)
 	// Update(notification Notification) error
 }
 
@@ -48,4 +48,5 @@ type NotificationService interface {
 type NotifWebsocket interface {
 	Run()
 	HandleNotificationRoom() func(*websocket.Conn)
+	Broadcast(data Notification)
 }

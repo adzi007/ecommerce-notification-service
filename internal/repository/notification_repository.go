@@ -3,8 +3,8 @@ package repository
 import (
 	"github.com/adzi007/ecommerce-notification-service/internal/domain"
 	"github.com/adzi007/ecommerce-notification-service/internal/dto"
+	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/database"
 	"github.com/k0kubun/pp/v3"
-	"gorm.io/gorm"
 )
 
 // Notification Model
@@ -20,10 +20,10 @@ import (
 
 // Repository
 type NotificationRepositoryStruct struct {
-	db *gorm.DB
+	db database.Database
 }
 
-func NewNotificationRepository(db *gorm.DB) domain.NotificationRepository {
+func NewNotificationRepository(db database.Database) domain.NotificationRepository {
 	return &NotificationRepositoryStruct{
 		db: db,
 	}
@@ -32,14 +32,14 @@ func NewNotificationRepository(db *gorm.DB) domain.NotificationRepository {
 func (repo *NotificationRepositoryStruct) FindByUser(userId string) ([]domain.Notification, error) {
 
 	var notifications []domain.Notification
-	err := repo.db.Where("user_id = ?", userId).Find(&notifications).Error
+	err := repo.db.GetDb().Where("user_id = ?", userId).Find(&notifications).Error
 	return notifications, err
 
 }
 
-func (repo *NotificationRepositoryStruct) Insert(notification dto.NotificationData) error {
+func (repo *NotificationRepositoryStruct) Insert(notification *dto.NotificationData) (domain.Notification, error) {
 
-	insertNotif := &domain.Notification{
+	insertNotif := domain.Notification{
 		UserID: notification.UserID,
 		Title:  notification.Title,
 		Body:   notification.Body,
@@ -48,13 +48,13 @@ func (repo *NotificationRepositoryStruct) Insert(notification dto.NotificationDa
 		IsRead: notification.IsRead,
 	}
 
-	result := repo.db.Create(&insertNotif)
+	result := repo.db.GetDb().Create(&insertNotif)
 
 	pp.Println("result >>> ", insertNotif)
 
-	return result.Error
+	return insertNotif, result.Error
 }
 
 func (repo *NotificationRepositoryStruct) Update(data domain.Notification) error {
-	return repo.db.Model(&domain.Notification{}).Where("id = ?", data.ID).Update("IsRead", data.IsRead).Error
+	return repo.db.GetDb().Model(&domain.Notification{}).Where("id = ?", data.ID).Update("IsRead", data.IsRead).Error
 }

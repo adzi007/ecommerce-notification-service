@@ -52,7 +52,6 @@ func AllowUpgrade(ctx *fiber.Ctx) error {
 		if token != "" {
 
 			// _, err := utils.DecodeToken(token)
-
 			// if err != nil {
 			// 	return fiber.ErrUnauthorized
 			// }
@@ -91,7 +90,7 @@ func (h *hub) HandleNotificationRoom() func(*websocket.Conn) {
 				return
 			}
 
-			insertNotification := dto.NotificationData{
+			insertNotification := &dto.NotificationData{
 				UserID: notificationMessage.UserID,
 				Title:  notificationMessage.Title,
 				Body:   notificationMessage.Body,
@@ -100,24 +99,19 @@ func (h *hub) HandleNotificationRoom() func(*websocket.Conn) {
 				IsRead: notificationMessage.IsRead,
 			}
 
-			err := h.NotificationUc.Insert(insertNotification)
+			data, err := h.NotificationUc.Insert(insertNotification)
 
 			if err != nil {
 				fmt.Println("errInserNewChat", err.Error())
 				return
 			}
 
-			h.BroadcastNotification <- domain.Notification{
-				ID:     1,
-				UserID: "f6gd7fgdff876g8fd",
-				Title:  "Test Brodcast",
-				Body:   "Lorem ipsum dolor sit amet",
-				Link:   "http://www.example.com/lorem/7dfd8fg6df88gf7",
-				Status: 0,
-				IsRead: 0,
-			}
-
+			h.BroadcastNotification <- data
 		}
-
 	}
+}
+
+func (h *hub) Broadcast(data domain.Notification) {
+
+	h.BroadcastNotification <- data
 }

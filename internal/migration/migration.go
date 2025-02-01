@@ -8,20 +8,16 @@ import (
 
 func main() {
 	config.LoadConfig()
-
 	db := database.NewDatabase()
-
 	appDbMigrate(db)
 }
 
 func appDbMigrate(db database.Database) {
 
 	err := db.GetDb().Migrator().CreateTable(&domain.Notification{})
-
 	// err := db.GetDb().Migrator().AutoMigrate(&entity.Cart{})
 
 	if err != nil {
 		panic("failed to migrate database: " + err.Error())
 	}
-
 }

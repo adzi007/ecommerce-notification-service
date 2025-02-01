@@ -1,16 +1,14 @@
 package main
 
 import (
-	"log"
-
 	"github.com/adzi007/ecommerce-notification-service/config"
 	"github.com/adzi007/ecommerce-notification-service/internal/delivery/ws"
+	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/database"
 	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/logger"
 	"github.com/adzi007/ecommerce-notification-service/internal/repository"
 	"github.com/adzi007/ecommerce-notification-service/internal/usecase"
+	"github.com/adzi007/ecommerce-notification-service/server"
 	"github.com/gofiber/contrib/fiberzerolog"
-	"github.com/gofiber/contrib/websocket"
-	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
@@ -18,25 +16,31 @@ func main() {
 
 	mylog := logger.NewLogger()
 
-	db := config.InitDB()
+	db := database.NewDatabase()
 
 	repo := repository.NewNotificationRepository(db)
 	uc := usecase.NewNotificationUsecase(repo)
 
-	// go delivery.ConsumeOrderUpdates(uc)
+	// // go delivery.ConsumeOrderUpdates(uc)
 
-	app := fiber.New()
-	app.Use(fiberzerolog.New(fiberzerolog.Config{
-		Logger: &mylog,
-	}))
+	// app := fiber.New()
+	// app.Use(fiberzerolog.New(fiberzerolog.Config{
+	// 	Logger: &mylog,
+	// }))
 
 	hub := ws.NewNotificationHub(uc)
 	go hub.Run()
 
-	app.Use("/ws", ws.AllowUpgrade)
+	servernya := server.NewFiberServer(db, hub)
 
-	app.Use("/ws/notification/:userId", websocket.New(hub.HandleNotificationRoom()))
+	servernya.Use(fiberzerolog.New(fiberzerolog.Config{
+		Logger: &mylog,
+	}))
 
-	log.Fatal(app.Listen(":8080"))
+	// app.Use("/ws", ws.AllowUpgrade)
+	// app.Use("/ws/notification/:userId", websocket.New(hub.HandleNotificationRoom()))
+	// log.Fatal(app.Listen(":8080"))
+
+	servernya.Start()
 
 }

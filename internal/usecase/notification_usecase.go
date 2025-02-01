@@ -20,7 +20,7 @@ func NewNotificationUsecase(repo domain.NotificationRepository) domain.Notificat
 }
 
 // WebSocket Notification
-func (uc *notificationUsecase) Insert(data dto.NotificationData) error {
+func (uc *notificationUsecase) Insert(data *dto.NotificationData) (domain.Notification, error) {
 
 	// err := uc.repo.Insert(data)
 	return uc.repo.Insert(data)
