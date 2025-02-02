@@ -81,5 +81,6 @@ func (s *fiberServer) initializeCartServiceHttpHandler() {
 
 	// router
 	s.app.Post("/send-notification", notifHandler.InsertNewNotifivation)
+	s.app.Get("/send-notification/:userId", notifHandler.GetNotificationByUser)
 
 }

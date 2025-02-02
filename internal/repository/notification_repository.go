@@ -49,10 +49,22 @@ func (repo *NotificationRepositoryStruct) Insert(notification *dto.NotificationD
 
 	result := repo.db.GetDb().Create(&insertNotif)
 
-	// pp.Println("result >>> ", insertNotif)
-
 	return insertNotif, result.Error
 }
+
+// func (repo *NotificationRepositoryStruct) GetNotifByUser(userId string) ([]domain.Notification, error) {
+
+// 	var notif []domain.Notification
+
+// 	filter := domain.Notification{
+// 		UserID: userId,
+// 	}
+
+// 	notifResult := repo.db.GetDb().Where(filter).Find(&notif)
+
+// 	return notif, notifResult.Error
+
+// }
 
 func (repo *NotificationRepositoryStruct) Update(data domain.Notification) error {
 	return repo.db.GetDb().Model(&domain.Notification{}).Where("id = ?", data.ID).Update("IsRead", data.IsRead).Error

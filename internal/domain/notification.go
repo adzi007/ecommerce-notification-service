@@ -2,6 +2,7 @@ package domain
 
 import (
 	"context"
+	"time"
 
 	"github.com/adzi007/ecommerce-notification-service/internal/dto"
 	"github.com/gofiber/contrib/websocket"
@@ -15,18 +16,18 @@ type Notification struct {
 	Link      string `gorm:"not null"`
 	Status    int8   `gorm:"not null"`
 	IsRead    int8   `gorm:"not null"`
-	CreatedAt string
+	CreatedAt time.Time
 }
 
 type NotifMessageRequest struct {
 	// ID        int64  `json:"id"`
-	UserID    string `json:"userId"`
-	Title     string `json:"title"`
-	Body      string `json:"body"`
-	Link      string `json:"link"`
-	Status    int8   `json:"status"`
-	IsRead    int8   `json:"isRead"`
-	CreatedAt string
+	UserID string `json:"userId"`
+	Title  string `json:"title"`
+	Body   string `json:"body"`
+	Link   string `json:"link"`
+	Status int8   `json:"status"`
+	IsRead int8   `json:"isRead"`
+	// CreatedAt string
 }
 
 type NotificationRepository interface {
@@ -38,6 +39,7 @@ type NotificationRepository interface {
 type NotificationUsecase interface {
 	// FindByUser(userId string) ([]Notification, error)
 	Insert(notification *dto.NotificationData) (Notification, error)
+	FindByUser(userId string) ([]Notification, error)
 	// Update(notification Notification) error
 }
 

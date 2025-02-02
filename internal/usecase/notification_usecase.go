@@ -21,23 +21,9 @@ func NewNotificationUsecase(repo domain.NotificationRepository) domain.Notificat
 
 // WebSocket Notification
 func (uc *notificationUsecase) Insert(data *dto.NotificationData) (domain.Notification, error) {
-
-	// err := uc.repo.Insert(data)
 	return uc.repo.Insert(data)
-
-	// client, exists := uc.Clients[userID]
-	// if exists {
-	// 	client.WriteMessage(websocket.TextMessage, []byte(message))
-	// }
 }
 
-// Email Notification
-// func (uc *notificationUsecase) SendEmailNotification(email string, message string) {
-// 	// Simulated SMTP config (use a real SMTP server)
-// 	auth := smtp.PlainAuth("", "your-email@example.com", "your-password", "smtp.example.com")
-// 	err := smtp.SendMail("smtp.example.com:587", auth, "your-email@example.com", []string{email}, []byte(message))
-// 	if err != nil {
-// 		log.Println("Failed to send email:", err)
-// 	}
-// 	fmt.Println("📧 Email sent to", email)
-// }
+func (uc *notificationUsecase) FindByUser(userId string) ([]domain.Notification, error) {
+	return uc.repo.FindByUser(userId)
+}

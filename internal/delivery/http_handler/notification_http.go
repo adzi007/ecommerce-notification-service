@@ -31,8 +31,6 @@ func (h *notifHttpHandler) InsertNewNotifivation(ctx *fiber.Ctx) error {
 		})
 	}
 
-	// pp.Println("reqBody >>>> ", reqBody)
-
 	data, err := h.notifUc.Insert(reqBody)
 
 	if err != nil {
@@ -46,9 +44,25 @@ func (h *notifHttpHandler) InsertNewNotifivation(ctx *fiber.Ctx) error {
 
 	h.notifWs.Broadcast(data)
 
-	// pp.Println("data >>> ", data)
-
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"pesan": "success create a new cart 1",
+	})
+}
+
+func (h *notifHttpHandler) GetNotificationByUser(ctx *fiber.Ctx) error {
+
+	userId := ctx.Params("userId")
+
+	data, err := h.notifUc.FindByUser(userId)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"pesan": "Failed to get cart",
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"pesan": "Success get notification by user",
+		"data":  data,
 	})
 }
