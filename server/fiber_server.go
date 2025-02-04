@@ -48,10 +48,6 @@ func (s *fiberServer) Start() {
 	s.app.Use("/ws", ws.AllowUpgrade)
 	s.app.Use("/ws/notification/:userId", websocket.New(s.notifWs.HandleNotificationRoom()))
 	s.initializNotificationServiceHandler()
-
-	// Start consuming messages
-	// go s.startRabbitMQConsumer()
-
 	log.Fatal(s.app.Listen(":5002"))
 
 }
@@ -86,11 +82,6 @@ func (s *fiberServer) Close() {
 func (s *fiberServer) startRabbitMQConsumer(notifUsecase domain.NotificationUsecase) {
 
 	queueName := "realtime_notif"
-
-	// Inject event handler
-	// eventHandler := ws.NewEventHandler(s.notifWs) // This will handle incoming messages
-
-	// err := s.rabbitMQ.ConsumeOrderStatus(queueName, eventHandler)
 	err := s.rabbitMQ.ConsumeOrderStatus(queueName, notifUsecase)
 
 	if err != nil {
