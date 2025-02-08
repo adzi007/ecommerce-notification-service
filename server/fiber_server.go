@@ -1,8 +1,10 @@
 package server
 
 import (
+	"fmt"
 	"log"
 
+	"github.com/adzi007/ecommerce-notification-service/config"
 	httphandler "github.com/adzi007/ecommerce-notification-service/internal/delivery/http_handler"
 	"github.com/adzi007/ecommerce-notification-service/internal/delivery/ws"
 	"github.com/adzi007/ecommerce-notification-service/internal/domain"
@@ -23,8 +25,17 @@ type fiberServer struct {
 
 func NewFiberServer(db database.Database, notifWs domain.NotifWebsocket) Server {
 
+	host := config.ENV.RABBITMQ_HOST_URL
+	port := config.ENV.RABBITMQ_PORT
+	user := config.ENV.RABBITMQ_USER
+	password := config.ENV.RABBITMQ_PASSWORD
+	vhost := config.ENV.RABBITMQ_VIRTUAL_HOST
+
+	rabbitMQURL := fmt.Sprintf("amqp://%s:%s@%s:%s/%s", user, password, host, port, vhost)
+
 	// Initialize RabbitMQ
-	rabbitMQ, err := rabbitmq.NewRabbitMQ("amqp://guest:guest@localhost:5672/ecommerce_development")
+	// rabbitMQ, err := rabbitmq.NewRabbitMQ("amqp://guest:guest@localhost:5672/ecommerce_development")
+	rabbitMQ, err := rabbitmq.NewRabbitMQ(rabbitMQURL)
 
 	if err != nil {
 		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
@@ -48,7 +59,10 @@ func (s *fiberServer) Start() {
 	s.app.Use("/ws", ws.AllowUpgrade)
 	s.app.Use("/ws/notification/:userId", websocket.New(s.notifWs.HandleNotificationRoom()))
 	s.initializNotificationServiceHandler()
-	log.Fatal(s.app.Listen(":5002"))
+
+	portApp := config.ENV.PORT_APP
+
+	log.Fatal(s.app.Listen(":" + portApp))
 
 }
 

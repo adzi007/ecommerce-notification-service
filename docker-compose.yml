@@ -1,0 +1,21 @@
+version: "3.8"
+services:
+  app:
+    image: my-golang-app:latest
+    build: .
+    ports:
+      - "5002:5002"
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - sqlite-data:/root/
+    networks:
+      - mynetwork
+
+volumes:
+  sqlite-data:
+
+networks:
+  mynetwork:
