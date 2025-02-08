@@ -1,5 +1,5 @@
 # Stage 1: Build Golang Application
-FROM golang:1.20 AS builder
+FROM golang:1.21 AS builder
 WORKDIR /app
 COPY . .
 RUN go mod tidy && go build -o main

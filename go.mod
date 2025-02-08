@@ -1,12 +1,11 @@
 module github.com/adzi007/ecommerce-notification-service
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/gofiber/contrib/fiberzerolog v1.0.2
 	github.com/gofiber/contrib/websocket v1.3.3
 	github.com/gofiber/fiber/v2 v2.52.6
-	github.com/k0kubun/pp/v3 v3.4.1
 	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/rs/zerolog v1.33.0
 	github.com/spf13/viper v1.19.0
