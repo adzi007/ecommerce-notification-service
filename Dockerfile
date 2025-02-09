@@ -1,24 +1,23 @@
-# Stage 1: Build Golang Application
-FROM golang:1.21 AS builder
+# Stage 1: Build the Go application
+FROM buildpack-deps:bookworm AS builder
+
 WORKDIR /app
 COPY . .
-RUN go mod tidy && go build -o main
 
-# Stage 2: Create Final Image
-FROM alpine:latest
+# Enable CGO for SQLite and install necessary packages
+RUN apt-get update && apt-get install -y gcc libc-dev
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o main .
+
+# Stage 2: Create final minimal image
+FROM debian:bookworm-slim
+
 WORKDIR /root/
-
-# Copy the compiled Go binary
 COPY --from=builder /app/main .
+COPY .env .
 
-# Ensure the database directory exists in the container
+# Ensure SQLite database is copied
 RUN mkdir -p /root/database
-
-# Copy the SQLite database from the project directory
 COPY database/notifications.db /root/database/notifications.db
 
-# Expose the necessary port
 EXPOSE 5002
-
-# Start the application
 CMD ["./main"]

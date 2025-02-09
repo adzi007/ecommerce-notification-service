@@ -6,8 +6,6 @@ import (
 	"runtime"
 
 	"github.com/spf13/viper"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 )
 
 type Config struct {
@@ -51,10 +49,10 @@ func LoadConfig() {
 }
 
 // Connect to SQLite Database
-func InitDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("database/notifications.db"), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
-	}
-	return db
-}
+// func InitDB() *gorm.DB {
+// 	db, err := gorm.Open(sqlite.Open("database/notifications.db"), &gorm.Config{})
+// 	if err != nil {
+// 		log.Fatal("Failed to connect to database:", err)
+// 	}
+// 	return db
+// }
