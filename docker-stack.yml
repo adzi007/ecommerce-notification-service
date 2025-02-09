@@ -54,7 +54,7 @@ services:
 
 networks:
   ecommerce-network:
-    external: true
+    driver: overlay  # No need to create it manually
 
 volumes:
   db_data:
