@@ -34,6 +34,8 @@ func NewDatabase() Database {
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=Local", dbUsername, dbPassword, dbHost, dbPort, dbName)
 
+	fmt.Println("connectionString >>> ", connectionString)
+
 	var db *gorm.DB
 	var err error
 
