@@ -29,7 +29,8 @@ services:
     networks:
       - ecommerce-network
     depends_on:
-      - db
+      db:
+       condition: service_healthy
     ports:
       - "5002:5002"
     environment:
@@ -38,9 +39,6 @@ services:
       - DB_USER=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME}
-    env_file:
-      - .env
-    entrypoint: ["/app/wait-for-db.sh", "./main"]
     deploy:
       replicas: 2  # Run 2 instances across worker nodes
       restart_policy:
