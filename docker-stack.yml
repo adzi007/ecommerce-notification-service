@@ -6,8 +6,8 @@ services:
     networks:
       - ecommerce-network
     environment:
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD} 
-      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=KopiJoni888
+      - MYSQL_DATABASE=ecommerce_development
     ports:
       - "3306:3306"
     volumes:
@@ -33,11 +33,13 @@ services:
     ports:
       - "5002:5002"
     environment:
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - DB_USER=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=KopiJoni888
+      - DB_NAME=ecommerce_development
+    env_file:
+      - .env
     deploy:
       replicas: 2  # Run 2 instances across worker nodes
       restart_policy:
@@ -48,6 +50,7 @@ services:
       placement:
         constraints:
           - node.role == worker
+    # entrypoint: ["/bin/sh", "-c", "until mysqladmin ping -h db --silent; do echo waiting for database; sleep 2; done; exec ./main"]
 
 networks:
   ecommerce-network:

@@ -79,7 +79,7 @@ func (s *fiberServer) initializNotificationServiceHandler() {
 
 	// router
 	s.app.Post("/send-notification", notifHandler.InsertNewNotifivation)
-	s.app.Get("/send-notification/:userId", notifHandler.GetNotificationByUser)
+	s.app.Get("/notification/:userId", notifHandler.GetNotificationByUser)
 
 	go s.startRabbitMQConsumer(notifeUsecase)
 

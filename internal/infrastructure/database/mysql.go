@@ -18,14 +18,6 @@ var dbInstance *postgresDatabase
 
 func NewDatabase() Database {
 
-	// db, err := gorm.Open(sqlite.Open("database/notifications.db"), &gorm.Config{})
-	// if err != nil {
-	// 	log.Fatal("Failed to connect to database:", err)
-	// }
-
-	// dbInstance = &postgresDatabase{Db: db}
-	// return dbInstance
-
 	dbUsername := config.ENV.DB_USERNAME
 	dbPassword := config.ENV.DB_PASSWORD
 	dbName := config.ENV.DB_NAME
@@ -47,7 +39,7 @@ func NewDatabase() Database {
 	var err error
 
 	// Retry connecting to the database up to 10 times
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 50; i++ {
 		db, err = gorm.Open(mysql.Open(connectionString), &gorm.Config{
 			Logger: logger.Default.LogMode(logger.Info), // Enable logging for debugging
 		})
@@ -59,7 +51,8 @@ func NewDatabase() Database {
 	}
 
 	if err != nil {
-		panic("failed to connect database after 10 attempts")
+		// panic("failed to connect database after 10 attempts")
+		fmt.Println("failed to connect database after 10 attempts")
 	}
 
 	dbInstance = &postgresDatabase{Db: db}

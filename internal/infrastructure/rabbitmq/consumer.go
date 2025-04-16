@@ -2,6 +2,7 @@ package rabbitmq
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"strconv"
 
@@ -44,13 +45,23 @@ func (r *RabbitMQ) ConsumeOrderStatus(queueName string, notifUsecase domain.Noti
 
 			n := strconv.Itoa(int(orderMessage.OrderID))
 
+			fmt.Println("orderMessage >>>>> ", orderMessage)
+
 			notifMessagae := &dto.NotificationData{
-				UserID: "d86g8d7fgdf",
-				Title:  "Your Order Confirmed",
+				UserID: orderMessage.UserId,
+				Title:  "Your Order Status is " + orderMessage.Status,
 				Body:   "lorem ipsum dolor sit amet",
 				Link:   "http://www.example.com/order/" + n,
 				Status: 1,
 			}
+
+			// notifMessagae := &dto.NotificationData{
+			// 	UserID: "d86g8d7fgdf",
+			// 	Title:  "Your Order Confirmed",
+			// 	Body:   "lorem ipsum dolor sit amet",
+			// 	Link:   "http://www.example.com/order/" + n,
+			// 	Status: 1,
+			// }
 
 			notifUsecase.Insert(notifMessagae)
 		}

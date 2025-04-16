@@ -14,8 +14,8 @@ func main() {
 
 func appDbMigrate(db database.Database) {
 
-	err := db.GetDb().Migrator().CreateTable(&domain.Notification{})
-	// err := db.GetDb().Migrator().AutoMigrate(&entity.Cart{})
+	// err := db.GetDb().Migrator().CreateTable(&domain.Notification{})
+	err := db.GetDb().Migrator().AutoMigrate(&domain.Notification{})
 
 	if err != nil {
 		panic("failed to migrate database: " + err.Error())

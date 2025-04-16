@@ -11,6 +11,7 @@ import (
 type Notification struct {
 	ID        int64  `gorm:"primaryKey"`
 	UserID    string `gorm:"not null"`
+	OrderId   uint   `gorm:"not null"`
 	Title     string `gorm:"not null"`
 	Body      string `gorm:"not null"`
 	Link      string `gorm:"not null"`
