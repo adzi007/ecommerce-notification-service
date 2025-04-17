@@ -44,6 +44,10 @@ type NotificationUsecase interface {
 	// Update(notification Notification) error
 }
 
+type BroadcasterUsecase interface {
+	Broadcast(data Notification)
+}
+
 type NotificationService interface {
 	FindByUser(ctx context.Context, user string) ([]dto.NotificationData, error)
 }

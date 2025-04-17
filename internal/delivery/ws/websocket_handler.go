@@ -1,10 +1,7 @@
 package ws
 
 import (
-	"fmt"
-
 	"github.com/adzi007/ecommerce-notification-service/internal/domain"
-	"github.com/adzi007/ecommerce-notification-service/internal/dto"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,21 +12,31 @@ type notificationChanel struct {
 }
 
 type hub struct {
-	Clients                 map[*websocket.Conn]bool
-	ClientRegisterChanel    chan *websocket.Conn
-	ClientRemovalChanel     chan *websocket.Conn
-	BroadcastNotification   chan domain.Notification
-	NotificationUc          domain.NotificationUsecase
+	Clients               map[*websocket.Conn]bool
+	ClientRegisterChanel  chan *websocket.Conn
+	ClientRemovalChanel   chan *websocket.Conn
+	BroadcastNotification chan domain.Notification
+	// NotificationUc          domain.NotificationUsecase
 	NotifiChanelConnections []notificationChanel
 }
 
-func NewNotificationHub(notifUc domain.NotificationUsecase) domain.NotifWebsocket {
+// func NewNotificationHub(notifUc domain.NotificationUsecase) domain.NotifWebsocket {
+// 	return &hub{
+// 		Clients:               make(map[*websocket.Conn]bool),
+// 		ClientRegisterChanel:  make(chan *websocket.Conn),
+// 		BroadcastNotification: make(chan domain.Notification),
+// 		ClientRemovalChanel:   make(chan *websocket.Conn),
+// 		NotificationUc:        notifUc,
+// 	}
+// }
+
+func NewNotificationHub() domain.NotifWebsocket {
 	return &hub{
 		Clients:               make(map[*websocket.Conn]bool),
 		ClientRegisterChanel:  make(chan *websocket.Conn),
 		BroadcastNotification: make(chan domain.Notification),
 		ClientRemovalChanel:   make(chan *websocket.Conn),
-		NotificationUc:        notifUc,
+		// NotificationUc:        notifUc,
 	}
 }
 
@@ -117,23 +124,23 @@ func (h *hub) HandleNotificationRoom() func(*websocket.Conn) {
 				return
 			}
 
-			insertNotification := &dto.NotificationData{
-				UserID: notificationMessage.UserID,
-				Title:  notificationMessage.Title,
-				Body:   notificationMessage.Body,
-				Link:   notificationMessage.Link,
-				Status: notificationMessage.Status,
-				IsRead: notificationMessage.IsRead,
-			}
+			// insertNotification := &dto.NotificationData{
+			// 	UserID: notificationMessage.UserID,
+			// 	Title:  notificationMessage.Title,
+			// 	Body:   notificationMessage.Body,
+			// 	Link:   notificationMessage.Link,
+			// 	Status: notificationMessage.Status,
+			// 	IsRead: notificationMessage.IsRead,
+			// }
 
-			data, err := h.NotificationUc.Insert(insertNotification)
+			// data, err := h.NotificationUc.Insert(insertNotification)
 
-			if err != nil {
-				fmt.Println("errInserNewChat", err.Error())
-				return
-			}
+			// if err != nil {
+			// 	fmt.Println("errInserNewChat", err.Error())
+			// 	return
+			// }
 
-			h.BroadcastNotification <- data
+			// h.BroadcastNotification <- data
 		}
 	}
 }

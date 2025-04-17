@@ -12,6 +12,7 @@ import (
 	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/rabbitmq"
 	"github.com/adzi007/ecommerce-notification-service/internal/repository"
 	"github.com/adzi007/ecommerce-notification-service/internal/usecase"
+	"github.com/adzi007/ecommerce-notification-service/internal/usecase/broadcaster"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
 )
@@ -71,8 +72,11 @@ func (s *fiberServer) initializNotificationServiceHandler() {
 	// repository
 	notifRepo := repository.NewNotificationRepository(s.db)
 
+	// Broadcast Usecase
+	broadcastUsecase := broadcaster.NewBroadcaster(s.notifWs)
+
 	// product service repository
-	notifeUsecase := usecase.NewNotificationUsecase(notifRepo)
+	notifeUsecase := usecase.NewNotificationUsecase(notifRepo, broadcastUsecase)
 
 	// handler
 	notifHandler := httphandler.NewCartHttpHandle(notifeUsecase, s.notifWs)

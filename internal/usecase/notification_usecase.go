@@ -8,20 +8,31 @@ import (
 
 type notificationUsecase struct {
 	// repo    *repository.NotificationRepositoryStruct
-	repo    domain.NotificationRepository
-	Clients map[string]*websocket.Conn
+	repo        domain.NotificationRepository
+	Clients     map[string]*websocket.Conn
+	broadcaster domain.BroadcasterUsecase
 }
 
-func NewNotificationUsecase(repo domain.NotificationRepository) domain.NotificationUsecase {
+func NewNotificationUsecase(repo domain.NotificationRepository, broadcaster domain.BroadcasterUsecase) domain.NotificationUsecase {
 	return &notificationUsecase{
-		repo:    repo,
-		Clients: make(map[string]*websocket.Conn),
+		repo:        repo,
+		Clients:     make(map[string]*websocket.Conn),
+		broadcaster: broadcaster,
 	}
 }
 
 // WebSocket Notification
 func (uc *notificationUsecase) Insert(data *dto.NotificationData) (domain.Notification, error) {
-	return uc.repo.Insert(data)
+	// return uc.repo.Insert(data)
+
+	dataNotif, err := uc.repo.Insert(data)
+
+	// if err != nil {
+	// }
+
+	uc.broadcaster.Broadcast(dataNotif)
+
+	return dataNotif, err
 }
 
 func (uc *notificationUsecase) FindByUser(userId string) ([]domain.Notification, error) {

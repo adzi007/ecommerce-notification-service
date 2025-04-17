@@ -10,8 +10,6 @@ import (
 	"github.com/adzi007/ecommerce-notification-service/internal/delivery/ws"
 	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/database"
 	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/logger"
-	"github.com/adzi007/ecommerce-notification-service/internal/repository"
-	"github.com/adzi007/ecommerce-notification-service/internal/usecase"
 	"github.com/adzi007/ecommerce-notification-service/server"
 	"github.com/gofiber/contrib/fiberzerolog"
 )
@@ -21,10 +19,13 @@ func main() {
 	mylog := logger.NewLogger()
 
 	db := database.NewDatabase()
-	repo := repository.NewNotificationRepository(db)
-	uc := usecase.NewNotificationUsecase(repo)
+	// repo := repository.NewNotificationRepository(db)
 
-	hub := ws.NewNotificationHub(uc)
+	// broadcastUsecase := broadcaster.NewBroadcaster(s.notifWs)
+	// uc := usecase.NewNotificationUsecase(repo)
+
+	// hub := ws.NewNotificationHub(uc)
+	hub := ws.NewNotificationHub()
 	go hub.Run()
 
 	servernya := server.NewFiberServer(db, hub)
