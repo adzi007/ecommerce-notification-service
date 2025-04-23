@@ -9,6 +9,7 @@ import (
 	"github.com/adzi007/ecommerce-notification-service/internal/delivery/ws"
 	"github.com/adzi007/ecommerce-notification-service/internal/domain"
 	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/database"
+	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/monitoring"
 	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/rabbitmq"
 	"github.com/adzi007/ecommerce-notification-service/internal/repository"
 	"github.com/adzi007/ecommerce-notification-service/internal/usecase"
@@ -80,6 +81,9 @@ func (s *fiberServer) initializNotificationServiceHandler() {
 
 	// handler
 	notifHandler := httphandler.NewCartHttpHandle(notifeUsecase, s.notifWs)
+
+	// Add metrics route
+	s.app.Get("/metrics", monitoring.MetricsHandler())
 
 	// router
 	s.app.Post("/send-notification", notifHandler.InsertNewNotifivation)

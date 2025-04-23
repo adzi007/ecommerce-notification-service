@@ -10,6 +10,7 @@ import (
 	"github.com/adzi007/ecommerce-notification-service/internal/delivery/ws"
 	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/database"
 	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/logger"
+	"github.com/adzi007/ecommerce-notification-service/internal/infrastructure/monitoring"
 	"github.com/adzi007/ecommerce-notification-service/server"
 	"github.com/gofiber/contrib/fiberzerolog"
 )
@@ -29,6 +30,11 @@ func main() {
 	go hub.Run()
 
 	servernya := server.NewFiberServer(db, hub)
+
+	// Register Prometheus metrics
+	monitoring.RegisterMetrics()
+
+	servernya.Use(monitoring.PrometheusMiddleware())
 
 	servernya.Use(fiberzerolog.New(fiberzerolog.Config{
 		Logger: &mylog,

@@ -26,14 +26,14 @@ func NewDatabase() Database {
 
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=Local", dbUsername, dbPassword, dbHost, dbPort, dbName)
 
-	fmt.Println("------------------------------------------")
-	fmt.Println("debug db connection")
-	fmt.Println("dbUsername >>> ", dbUsername)
-	fmt.Println("dbPassword >>> ", dbPassword)
-	fmt.Println("dbName >>> ", dbName)
-	fmt.Println("dbHost >>> ", dbHost)
-	fmt.Println("dbPort >>> ", dbPort)
-	fmt.Println("------------------------------------------")
+	// fmt.Println("------------------------------------------")
+	// fmt.Println("debug db connection")
+	// fmt.Println("dbUsername >>> ", dbUsername)
+	// fmt.Println("dbPassword >>> ", dbPassword)
+	// fmt.Println("dbName >>> ", dbName)
+	// fmt.Println("dbHost >>> ", dbHost)
+	// fmt.Println("dbPort >>> ", dbPort)
+	// fmt.Println("------------------------------------------")
 
 	var db *gorm.DB
 	var err error
