@@ -2,10 +2,12 @@ package config
 
 import (
 	"log"
+	"os"
 	"path/filepath"
 	"runtime"
 
 	"github.com/spf13/viper"
+	// "os"
 )
 
 type Config struct {
@@ -25,31 +27,50 @@ type Config struct {
 }
 
 var (
-	ENV        Config
-	_, b, _, _ = runtime.Caller(0)
-
+	ENV             Config
+	_, b, _, _      = runtime.Caller(0)
 	ProjectRootPath = filepath.Join(filepath.Dir(b), "../")
 )
 
 func LoadConfig() {
-	// Load .env file only in development
-	if os.Getenv("ENV") != "production" {
-		viper.SetConfigFile(".env")
-		viper.SetConfigType("env")
-		if err := viper.ReadInConfig(); err != nil {
-			log.Fatalf("Error reading .env file: %v", err)
-		}
-	}
-
-	// Automatically override with environment variables
 	viper.AutomaticEnv()
 
-	// Bind environment variables to struct
-	if err := viper.Unmarshal(&ENV); err != nil {
-		log.Fatalf("Failed to unmarshal env vars: %v", err)
+	// Explicitly bind environment variables
+	viper.BindEnv("DB_HOST")
+	viper.BindEnv("DB_USERNAME")
+	viper.BindEnv("DB_PASSWORD")
+	viper.BindEnv("DB_PORT")
+	viper.BindEnv("DB_NAME")
+	viper.BindEnv("PORT_APP")
+	viper.BindEnv("API_GATEWAY")
+	viper.BindEnv("URL_PRODUCT_SERVICE")
+	viper.BindEnv("RABBITMQ_HOST_URL")
+	viper.BindEnv("RABBITMQ_PORT")
+	viper.BindEnv("RABBITMQ_USER")
+	viper.BindEnv("RABBITMQ_PASSWORD")
+	viper.BindEnv("RABBITMQ_VIRTUAL_HOST")
+
+	ENV = Config{
+		DB_HOST:               viper.GetString("DB_HOST"),
+		DB_USERNAME:           viper.GetString("DB_USERNAME"),
+		DB_PASSWORD:           viper.GetString("DB_PASSWORD"),
+		DB_PORT:               viper.GetString("DB_PORT"),
+		DB_NAME:               viper.GetString("DB_NAME"),
+		PORT_APP:              viper.GetString("PORT_APP"),
+		API_GATEWAY:           viper.GetString("API_GATEWAY"),
+		URL_PRODUCT_SERVICE:   viper.GetString("URL_PRODUCT_SERVICE"),
+		RABBITMQ_HOST_URL:     viper.GetString("RABBITMQ_HOST_URL"),
+		RABBITMQ_PORT:         viper.GetString("RABBITMQ_PORT"),
+		RABBITMQ_USER:         viper.GetString("RABBITMQ_USER"),
+		RABBITMQ_PASSWORD:     viper.GetString("RABBITMQ_PASSWORD"),
+		RABBITMQ_VIRTUAL_HOST: viper.GetString("RABBITMQ_VIRTUAL_HOST"),
 	}
 
-	log.Println("Config loaded successfully")
+	log.Println("os >>> DB_HOST:", os.Getenv("DB_HOST"))
+	log.Println("os >>> DB_USERNAME:", os.Getenv("DB_USERNAME"))
+
+	log.Println("✅ Successfully loaded environment variables BindEnv")
+
 }
 
 // Connect to SQLite Database
