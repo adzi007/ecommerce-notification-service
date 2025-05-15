@@ -32,20 +32,24 @@ var (
 )
 
 func LoadConfig() {
-	viper.AddConfigPath(".")
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatal(err)
+	// Load .env file only in development
+	if os.Getenv("ENV") != "production" {
+		viper.SetConfigFile(".env")
+		viper.SetConfigType("env")
+		if err := viper.ReadInConfig(); err != nil {
+			log.Fatalf("Error reading .env file: %v", err)
+		}
 	}
 
+	// Automatically override with environment variables
+	viper.AutomaticEnv()
+
+	// Bind environment variables to struct
 	if err := viper.Unmarshal(&ENV); err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to unmarshal env vars: %v", err)
 	}
 
-	log.Println("Load server successfully")
+	log.Println("Config loaded successfully")
 }
 
 // Connect to SQLite Database

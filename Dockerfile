@@ -31,7 +31,7 @@ COPY --from=builder /app/main /
 COPY --from=builder /app/migrate /migrate
 
 # Copy the .env file into the root directory of the final image
-COPY --from=builder /app/.env /
+# COPY --from=builder /app/.env /
 
 # Set working directory
 # WORKDIR /app
