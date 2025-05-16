@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/adzi007/ecommerce-notification-service/config"
 	"github.com/adzi007/ecommerce-notification-service/internal/domain"
 	"github.com/rabbitmq/amqp091-go"
 )
@@ -20,7 +21,16 @@ type OrderStatusUpdated struct {
 // RabbitMQ Consumer
 func ConsumeOrderUpdates(uc *domain.NotificationUsecase) {
 	// conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
-	conn, err := amqp091.Dial("amqp://guest:guest@rabbitmq:5672/")
+
+	rabbitUser := config.ENV.RABBITMQ_USER
+	rabbitPass := config.ENV.RABBITMQ_PASSWORD
+	rabbitHost := config.ENV.RABBITMQ_HOST_URL
+	rabbitPort := config.ENV.RABBITMQ_PORT
+	rabbitVHost := config.ENV.RABBITMQ_VIRTUAL_HOST
+
+	amqpURL := "amqp://" + rabbitUser + ":" + rabbitPass + "@" + rabbitHost + ":" + rabbitPort + "/" + rabbitVHost
+
+	conn, err := amqp091.Dial(amqpURL)
 	if err != nil {
 		log.Fatal("Failed to connect to RabbitMQ:", err)
 	}
