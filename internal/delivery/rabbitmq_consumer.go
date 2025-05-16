@@ -32,7 +32,7 @@ func ConsumeOrderUpdates(uc *domain.NotificationUsecase) {
 
 	conn, err := amqp091.Dial(amqpURL)
 	if err != nil {
-		log.Fatal("Failed to connect to RabbitMQ:", err)
+		log.Fatal("Failed to connect to RabbitMQ rabbitmq_consumer.go:", err)
 	}
 	defer conn.Close()
 

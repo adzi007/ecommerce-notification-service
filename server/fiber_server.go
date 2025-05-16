@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/adzi007/ecommerce-notification-service/config"
 	httphandler "github.com/adzi007/ecommerce-notification-service/internal/delivery/http_handler"
@@ -33,14 +34,22 @@ func NewFiberServer(db database.Database, notifWs domain.NotifWebsocket) Server 
 	password := config.ENV.RABBITMQ_PASSWORD
 	vhost := config.ENV.RABBITMQ_VIRTUAL_HOST
 
-	rabbitMQURL := fmt.Sprintf("amqp://%s:%s@%s:%s/%s", user, password, host, port, vhost)
+	if !strings.HasPrefix(vhost, "/") {
+		vhost = "/" + vhost
+	}
+
+	rabbitMQURL := fmt.Sprintf("amqp://%s:%s@%s:%s%s", user, password, host, port, vhost)
+
+	// rabbitMQURL := fmt.Sprintf("amqp://%s:%s@%s:%s/%s", user, password, host, port, vhost)
+
+	fmt.Println("dial rabbitmq siber_server.go lalala", rabbitMQURL)
 
 	// Initialize RabbitMQ
 	// rabbitMQ, err := rabbitmq.NewRabbitMQ("amqp://guest:guest@localhost:5672/ecommerce_development")
 	rabbitMQ, err := rabbitmq.NewRabbitMQ(rabbitMQURL)
 
 	if err != nil {
-		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
+		log.Fatalf("Failed to connect to RabbitMQ siber_server.go: %v", err)
 	}
 
 	fiberApp := fiber.New()

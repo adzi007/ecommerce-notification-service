@@ -55,14 +55,6 @@ func (r *RabbitMQ) ConsumeOrderStatus(queueName string, notifUsecase domain.Noti
 				Status: 1,
 			}
 
-			// notifMessagae := &dto.NotificationData{
-			// 	UserID: "d86g8d7fgdf",
-			// 	Title:  "Your Order Confirmed",
-			// 	Body:   "lorem ipsum dolor sit amet",
-			// 	Link:   "http://www.example.com/order/" + n,
-			// 	Status: 1,
-			// }
-
 			notifUsecase.Insert(notifMessagae)
 		}
 	}()

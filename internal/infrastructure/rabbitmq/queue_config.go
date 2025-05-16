@@ -13,7 +13,9 @@ func DeclareQueue(ch *amqp091.Channel, queueName string) error {
 		false,     // Auto-delete
 		false,     // Exclusive
 		false,     // No-wait
-		nil,       // Arguments
+		amqp091.Table{
+			"x-queue-type": "quorum",
+		}, // arguments
 	)
 	if err != nil {
 		return err
