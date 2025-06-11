@@ -101,4 +101,4 @@ docker exec -it ecommerce-notification-service /migrate
 
 ## API Documentation
 
-<a href="https://www.postman.com/adzi/ecommerce-notification-service/overview" target="_blank">Postman Collections</a>
+<a href="https://www.postman.com/team-ninja-8073/ecommerce-notification-service/overview" target="_blank">Postman Collections</a>
